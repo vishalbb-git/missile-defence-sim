@@ -1,0 +1,228 @@
+/* Missile Defense Simulation Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: #0a0a0a;
+    color: #00ff00;
+    overflow: hidden;
+}
+
+#game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background: #1a1a1a;
+    padding: 10px 20px;
+    border-bottom: 2px solid #00ff00;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    color: #00ff00;
+    font-size: 24px;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+#game-stats {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+}
+
+#main-display {
+    flex: 1;
+    display: flex;
+    background: #111;
+}
+
+#radar-canvas {
+    border: 2px solid #00ff00;
+    background: #000;
+    cursor: crosshair;
+}
+
+#control-panel {
+    width: 300px;
+    background: #1a1a1a;
+    border-left: 2px solid #00ff00;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+#control-panel h3, #control-panel h4 {
+    color: #00ff00;
+    margin-bottom: 10px;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+#weapon-selection {
+    margin-bottom: 30px;
+}
+
+.weapon-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 12px;
+    background: #2a2a2a;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.weapon-btn:hover {
+    background: #3a3a3a;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+.weapon-btn.active {
+    background: #004400;
+    box-shadow: 0 0 15px #00ff00;
+}
+
+.weapon-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ammo, .cooldown {
+    float: right;
+    color: #ffff00;
+}
+
+#ai-controls {
+    margin-bottom: 30px;
+}
+
+.ai-btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #2a2a2a;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.ai-btn:hover {
+    background: #3a3a3a;
+}
+
+.ai-btn.active {
+    background: #440044;
+    color: #ff00ff;
+}
+
+#threat-info {
+    border: 1px solid #444;
+    padding: 10px;
+    background: #222;
+}
+
+#target-details {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #cccccc;
+}
+
+#game-controls {
+    background: #1a1a1a;
+    padding: 15px 20px;
+    border-top: 2px solid #00ff00;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#game-controls button {
+    padding: 10px 20px;
+    background: #2a2a2a;
+    color: #00ff00;
+    border: 1px solid #00ff00;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+#game-controls button:hover {
+    background: #3a3a3a;
+    box-shadow: 0 0 10px #00ff00;
+}
+
+#game-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Radar display styles */
+.threat-fighter {
+    color: #ff4444;
+}
+
+.threat-missile {
+    color: #ff8800;
+}
+
+.threat-drone {
+    color: #8888ff;
+}
+
+.weapon-trail {
+    color: #00ff00;
+}
+
+.explosion {
+    color: #ffff00;
+}
+
+/* HUD Elements */
+.hud-element {
+    position: absolute;
+    color: #00ff00;
+    font-size: 10px;
+    pointer-events: none;
+    text-shadow: 0 0 3px #000;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+    #main-display {
+        flex-direction: column;
+    }
+    
+    #radar-canvas {
+        width: 100%;
+        height: 400px;
+    }
+    
+    #control-panel {
+        width: 100%;
+        height: 200px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    
+    #weapon-selection, #ai-controls, #threat-info {
+        flex: 1;
+        min-width: 200px;
+    }
+}
