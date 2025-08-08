@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missile Defense Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>Missile Defense Command</h1>
+            <div id="game-stats">
+                <span id="score">Score: 0</span>
+                <span id="wave">Wave: 1</span>
+                <span id="threats-remaining">Threats: 0</span>
+            </div>
+        </header>
+        
+        <div id="main-display">
+            <canvas id="radar-canvas" width="800" height="600"></canvas>
+            
+            <div id="control-panel">
+                <h3>Weapon Systems</h3>
+                <div id="weapon-selection">
+                    <button id="sam-btn" class="weapon-btn active" data-weapon="sam">
+                        SAM <span class="ammo">(12)</span>
+                    </button>
+                    <button id="ciws-btn" class="weapon-btn" data-weapon="ciws">
+                        CIWS <span class="ammo">(50)</span>
+                    </button>
+                    <button id="laser-btn" class="weapon-btn" data-weapon="laser">
+                        Laser <span class="cooldown">(Ready)</span>
+                    </button>
+                    <button id="jamming-btn" class="weapon-btn" data-weapon="jamming">
+                        EW Jam <span class="cooldown">(Ready)</span>
+                    </button>
+                </div>
+                
+                <div id="ai-controls">
+                    <h4>AI Assistant</h4>
+                    <button id="ai-toggle" class="ai-btn">AI: OFF</button>
+                    <button id="ai-mode" class="ai-btn" disabled>Manual Mode</button>
+                </div>
+                
+                <div id="threat-info">
+                    <h4>Selected Target</h4>
+                    <div id="target-details">Click on a threat to select</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="game-controls">
+            <button id="start-btn">Start Simulation</button>
+            <button id="pause-btn" disabled>Pause</button>
+            <button id="reset-btn">Reset</button>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
