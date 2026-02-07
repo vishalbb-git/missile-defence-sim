@@ -3,60 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Missile Defense Simulation</title>
+    <title>AEGIS Defense Command - Missile Defense Simulation</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="game-container">
-        <header>
-            <h1>Missile Defense Command</h1>
-            <div id="game-stats">
-                <span id="score">Score: 0</span>
-                <span id="wave">Wave: 1</span>
-                <span id="threats-remaining">Threats: 0</span>
+    <!-- Boot screen -->
+    <div id="boot-screen">
+        <div class="boot-content">
+            <div class="boot-logo">⬡</div>
+            <h1 class="boot-title">AEGIS DEFENSE COMMAND</h1>
+            <div class="boot-subtitle">INTEGRATED MISSILE DEFENSE SYSTEM v4.7.2</div>
+            <div class="boot-progress">
+                <div class="boot-progress-bar" id="boot-progress-bar"></div>
             </div>
-        </header>
-        
-        <div id="main-display">
-            <canvas id="radar-canvas" width="800" height="600"></canvas>
-            
-            <div id="control-panel">
-                <h3>Weapon Systems</h3>
-                <div id="weapon-selection">
-                    <button id="sam-btn" class="weapon-btn active" data-weapon="sam">
-                        SAM <span class="ammo">(12)</span>
-                    </button>
-                    <button id="ciws-btn" class="weapon-btn" data-weapon="ciws">
-                        CIWS <span class="ammo">(50)</span>
-                    </button>
-                    <button id="laser-btn" class="weapon-btn" data-weapon="laser">
-                        Laser <span class="cooldown">(Ready)</span>
-                    </button>
-                    <button id="jamming-btn" class="weapon-btn" data-weapon="jamming">
-                        EW Jam <span class="cooldown">(Ready)</span>
-                    </button>
-                </div>
-                
-                <div id="ai-controls">
-                    <h4>AI Assistant</h4>
-                    <button id="ai-toggle" class="ai-btn">AI: OFF</button>
-                    <button id="ai-mode" class="ai-btn" disabled>Manual Mode</button>
-                </div>
-                
-                <div id="threat-info">
-                    <h4>Selected Target</h4>
-                    <div id="target-details">Click on a threat to select</div>
-                </div>
-            </div>
-        </div>
-        
-        <div id="game-controls">
-            <button id="start-btn">Start Simulation</button>
-            <button id="pause-btn" disabled>Pause</button>
-            <button id="reset-btn">Reset</button>
+            <div class="boot-status" id="boot-status">INITIALIZING DEFENSE GRID...</div>
+            <button id="enter-btn" class="enter-btn" style="display:none;">ENTER COMMAND CENTER</button>
         </div>
     </div>
-    
+
+    <div id="game-container" style="display:none;">
+        <!-- Top HUD Bar -->
+        <header id="top-hud">
+            <div class="hud-left">
+                <div class="system-logo">⬡</div>
+                <div class="system-name">
+                    <span class="name-primary">AEGIS</span>
+                    <span class="name-secondary">DEFENSE COMMAND</span>
+                </div>
+            </div>
+            <div class="hud-center">
+                <div class="stat-block">
+                    <div class="stat-label">SCORE</div>
+                    <div class="stat-value" id="score">0</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">WAVE</div>
+                    <div class="stat-value" id="wave">1</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">THREATS</div>
+                    <div class="stat-value threat-color" id="threats-remaining">0</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">COMBO</div>
+                    <div class="stat-value combo-color" id="combo">x1</div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">BASE HP</div>
+                    <div class="stat-bar-container">
+                        <div class="stat-bar" id="base-health-bar"></div>
+                        <span class="stat-bar-text" id="base-health-text">100%</span>
+                    </div>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat-block">
+                    <div class="stat-label">SHIELD</div>
+                    <div class="stat-bar-container shield-bar-container">
+                        <div class="stat-bar shield-bar" id="shield-bar"></div>
+                        <span class="stat-bar-text" id="shield-text">100%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="alert-indicator" id="alert-indicator">
+                    <span class="alert-dot"></span>
+                    <span id="alert-text">STANDBY</span>
+                </div>
+                <div class="time-display" id="time-display">00:00</div>
+            </div>
+        </header>
+
+        <!-- Alert Banner -->
+        <div id="alert-banner" class="alert-banner hidden">
+            <span id="alert-message"></span>
+        </div>
+
+        <!-- Main Game Area -->
+        <div id="main-display">
+            <!-- Left Panel - Threat Intel -->
+            <div id="left-panel" class="side-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">◈</span> THREAT INTEL
+                </div>
+                <div id="threat-log" class="threat-log">
+                    <div class="log-entry system-entry">SYS: Defense grid online...</div>
+                </div>
+                <div class="panel-header" style="margin-top: 10px;">
+                    <span class="panel-icon">◉</span> THREAT LEGEND
+                </div>
+                <div class="threat-legend">
+                    <div class="legend-item"><span class="legend-dot" style="background:#ff4444;box-shadow:0 0 6px #ff4444;"></span> ICBM</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#ff8800;box-shadow:0 0 6px #ff8800;"></span> Cruise Missile</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#ff00ff;box-shadow:0 0 6px #ff00ff;"></span> Hypersonic</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#6688ff;box-shadow:0 0 6px #6688ff;"></span> Drone Swarm</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#44ffaa;box-shadow:0 0 6px #44ffaa;"></span> Stealth Bomber</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#ffff44;box-shadow:0 0 6px #ffff44;"></span> Fighter Jet</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#ff4488;box-shadow:0 0 6px #ff4488;"></span> Sea Missile</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:#00ffff;box-shadow:0 0 6px #00ffff;"></span> Orbital Strike</div>
+                </div>
+                <div class="panel-header" style="margin-top: 10px;">
+                    <span class="panel-icon">◆</span> WAVE STATS
+                </div>
+                <div id="wave-stats" class="wave-stats">
+                    <div class="wave-stat-row"><span>Intercepted:</span><span id="stat-intercepted">0</span></div>
+                    <div class="wave-stat-row"><span>Missed:</span><span id="stat-missed">0</span></div>
+                    <div class="wave-stat-row"><span>Accuracy:</span><span id="stat-accuracy">--</span></div>
+                    <div class="wave-stat-row"><span>Best Combo:</span><span id="stat-best-combo">x1</span></div>
+                </div>
+            </div>
+
+            <!-- Central Canvas -->
+            <div id="canvas-wrapper">
+                <canvas id="radar-canvas"></canvas>
+                <!-- Wave Announcement Overlay -->
+                <div id="wave-announce" class="wave-announce hidden">
+                    <div class="wave-announce-text" id="wave-announce-text">WAVE 1</div>
+                    <div class="wave-announce-sub" id="wave-announce-sub">INCOMING THREATS DETECTED</div>
+                </div>
+                <!-- Game Over Overlay -->
+                <div id="game-over" class="game-over-overlay hidden">
+                    <div class="game-over-content">
+                        <h2>BASE DESTROYED</h2>
+                        <div class="final-score">FINAL SCORE: <span id="final-score">0</span></div>
+                        <div class="final-wave">WAVES SURVIVED: <span id="final-wave">0</span></div>
+                        <button id="restart-btn" class="restart-btn">RESTART MISSION</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Weapons & Controls -->
+            <div id="right-panel" class="side-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">⬡</span> WEAPON SYSTEMS
+                </div>
+                <div id="weapon-selection">
+                    <button class="weapon-btn active" data-weapon="sam">
+                        <div class="weapon-icon">🚀</div>
+                        <div class="weapon-info">
+                            <div class="weapon-name">SAM Battery</div>
+                            <div class="weapon-desc">Surface-to-Air Missile</div>
+                        </div>
+                        <div class="weapon-status-bar"><div class="weapon-status-fill" id="sam-bar"></div></div>
+                        <div class="weapon-ammo"><span class="ammo-count" id="sam-ammo">15</span></div>
+                    </button>
+                    <button class="weapon-btn" data-weapon="ciws">
+                        <div class="weapon-icon">🔫</div>
+                        <div class="weapon-info">
+                            <div class="weapon-name">CIWS Phalanx</div>
+                            <div class="weapon-desc">Close-In Weapon Sys</div>
+                        </div>
+                        <div class="weapon-status-bar"><div class="weapon-status-fill" id="ciws-bar"></div></div>
+                        <div class="weapon-ammo"><span class="ammo-count" id="ciws-ammo">60</span></div>
+                    </button>
+                    <button class="weapon-btn" data-weapon="laser">
+                        <div class="weapon-icon">⚡</div>
+                        <div class="weapon-info">
+                            <div class="weapon-name">DEW Laser</div>
+                            <div class="weapon-desc">Directed Energy Wpn</div>
+                        </div>
+                        <div class="weapon-status-bar"><div class="weapon-status-fill laser-fill" id="laser-bar"></div></div>
+                        <div class="weapon-ammo"><span class="ammo-count" id="laser-ammo">RDY</span></div>
+                    </button>
+                    <button class="weapon-btn" data-weapon="emp">
+                        <div class="weapon-icon">💥</div>
+                        <div class="weapon-info">
+                            <div class="weapon-name">EMP Burst</div>
+                            <div class="weapon-desc">Area-Effect Disable</div>
+                        </div>
+                        <div class="weapon-status-bar"><div class="weapon-status-fill emp-fill" id="emp-bar"></div></div>
+                        <div class="weapon-ammo"><span class="ammo-count" id="emp-ammo">3</span></div>
+                    </button>
+                    <button class="weapon-btn" data-weapon="railgun">
+                        <div class="weapon-icon">🔷</div>
+                        <div class="weapon-info">
+                            <div class="weapon-name">Railgun</div>
+                            <div class="weapon-desc">Kinetic Penetrator</div>
+                        </div>
+                        <div class="weapon-status-bar"><div class="weapon-status-fill railgun-fill" id="railgun-bar"></div></div>
+                        <div class="weapon-ammo"><span class="ammo-count" id="railgun-ammo">8</span></div>
+                    </button>
+                    <button class="weapon-btn" data-weapon="shield">
+                        <div class="weapon-icon">🛡️</div>
+                        <div class="weapon-info">
+                            <div class="weapon-name">Shield Boost</div>
+                            <div class="weapon-desc">Regenerate Barrier</div>
+                        </div>
+                        <div class="weapon-status-bar"><div class="weapon-status-fill shield-fill" id="shield-boost-bar"></div></div>
+                        <div class="weapon-ammo"><span class="ammo-count" id="shield-ammo">5</span></div>
+                    </button>
+                </div>
+
+                <div class="panel-header" style="margin-top: 10px;">
+                    <span class="panel-icon">⚙</span> AI DEFENSE
+                </div>
+                <div id="ai-controls">
+                    <button id="ai-toggle" class="control-btn">
+                        <span class="btn-indicator"></span> AI: OFFLINE
+                    </button>
+                    <button id="ai-mode" class="control-btn" disabled>
+                        MODE: MANUAL
+                    </button>
+                </div>
+
+                <div class="panel-header" style="margin-top: 10px;">
+                    <span class="panel-icon">◎</span> TARGET DATA
+                </div>
+                <div id="threat-info">
+                    <div id="target-details" class="target-details-empty">
+                        Click a threat to inspect
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Control Bar -->
+        <div id="bottom-bar">
+            <div class="bottom-left">
+                <div class="mini-stat">
+                    <span class="mini-label">FPS</span>
+                    <span class="mini-value" id="fps-display">60</span>
+                </div>
+                <div class="mini-stat">
+                    <span class="mini-label">OBJECTS</span>
+                    <span class="mini-value" id="object-count">0</span>
+                </div>
+            </div>
+            <div class="bottom-center">
+                <button id="start-btn" class="game-btn start-btn-style">
+                    ▶ LAUNCH SIMULATION
+                </button>
+                <button id="pause-btn" class="game-btn pause-btn-style" disabled>
+                    ⏸ PAUSE
+                </button>
+                <button id="reset-btn" class="game-btn reset-btn-style">
+                    ↺ RESET
+                </button>
+            </div>
+            <div class="bottom-right">
+                <div class="mini-stat">
+                    <span class="mini-label">DIFFICULTY</span>
+                    <span class="mini-value" id="difficulty-display">NORMAL</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="game.js"></script>
 </body>
 </html>
